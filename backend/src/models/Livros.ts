@@ -42,7 +42,7 @@ Livro.init(
     },
     {
         sequelize,
-        tableName: 'users',
+        tableName: 'livros',
         timestamps: true
     }
 );
