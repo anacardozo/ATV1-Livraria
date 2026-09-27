@@ -8,7 +8,7 @@ export class LivroController {
         try {
 
             const livros = await Livro.findAll({
-                attributes: ['id', 'titulo', 'autor', 'preco', 'sinopse', 'anoPublicacao', 'updatedAt']
+                attributes: ['id', 'titulo', 'autor', 'preco', 'sinopse', 'anoPublicacao', 'createdAt']
             });
 
             return res.status(200).json(livros);
@@ -24,10 +24,18 @@ export class LivroController {
     public static async show(req: Request, res: Response): Promise<Response> {
         try {
 
-            const { id } = req.params;
+            const id = parseInt(req.params.id as string, 10);
 
-            const livro = await Livro.findByPk(Number(id), {
-                attributes: ['id', 'titulo', 'autor', 'preco', 'sinopse', 'anoPublicacao', 'updatedAt']
+            if (isNaN(id) || id <= 0) {
+
+                return res.status(400).json({
+                    erro: 'O ID informado deve ser um numero valido.'
+                })
+
+            }
+
+            const livro = await Livro.findByPk(id, {
+                attributes: ['id', 'titulo', 'autor', 'preco', 'sinopse', 'anoPublicacao', 'createdAt']
             });
 
             if (!livro) {
@@ -49,11 +57,51 @@ export class LivroController {
 
             const { titulo, autor, preco, sinopse, anoPublicacao } = req.body;
 
-            if (!titulo || !autor || !preco || !sinopse || !anoPublicacao) {
-                return res.status(400).json({ erro: 'titulo, autor, preço, sinopse, anoPublicacao são obrigatórios!' });
+            if (!titulo || typeof titulo !== 'string' || titulo.trim() === '') {
+
+                return res.status(400).json({ erro: 'O campo titulo é obrigatório' });
+
             }
 
-            const novoLivro = await Livro.create({ titulo, autor, preco, sinopse, anoPublicacao });
+            if (!autor || typeof autor !== 'string' || autor.trim() === '') {
+
+                return res.status(400).json({ erro: 'O campo autor é obrigatório' });
+
+            }
+
+            if (preco === undefined || typeof preco !== 'number' || preco < 0) {
+
+                return res.status(400).json({ erro: 'O campo preço é obrigatório e deve ser um número positivo' });
+
+            }
+
+            if (!sinopse || typeof sinopse !== 'string' || sinopse.trim() === '' || sinopse.length > 200) {
+
+                return res.status(400).json({ erro: 'O campo sinopse é obrigatório e deve conter no máximo 200 caracteres' });
+
+            }
+
+            const anoAtual = new Date().getFullYear();
+
+            if (anoPublicacao === undefined || typeof anoPublicacao !== 'number' || !Number.isInteger(anoPublicacao) || anoPublicacao < 0 || anoPublicacao > anoAtual) {
+
+                return res.status(400).json({ erro: 'O campo anoPublicação é obrigatório, deve ser um ano válido e não pode ser superior a ${anoAtual}' });
+
+            }
+
+            const livroExistente = await Livro.findOne({ where: { titulo: titulo.trim(), autor: autor.trim() } });
+
+            if (livroExistente) {
+                return res.status(409).json({ erro: 'Ja existe um Livro cadastrado com este titulo e autor.' });
+            }
+
+            const novoLivro = await Livro.create({
+                titulo: titulo.trim(),
+                autor: autor.trim(),
+                preco: preco,
+                sinopse: sinopse.trim(),
+                anoPublicacao: anoPublicacao
+            });
 
             return res.status(201).json({
                 id: novoLivro.id,
@@ -76,31 +124,96 @@ export class LivroController {
     public static async update(req: Request, res: Response): Promise<Response> {
         try {
 
-            const { id } = req.params;
+            const id = parseInt(req.params.id as string, 10);
+
+            if (isNaN(id) || id <= 0) {
+
+                return res.status(400).json({
+                    erro: 'O ID informado deve ser um numero valido.'
+                })
+
+            }
+
             const { titulo, autor, preco, sinopse, anoPublicacao } = req.body;
 
-            const livro = await Livro.findByPk(Number(id));
+            const livro = await Livro.findByPk(id);
 
             if (!livro) {
                 return res.status(404).json({ erro: 'Livro não encontrado para atualização!' });
             }
 
-            if (titulo) livro.titulo = titulo;
-            if (autor) livro.autor = autor;
-            if (preco) livro.preco = preco;
-            if (sinopse) livro.sinopse = sinopse;
-            if (anoPublicacao) livro.anoPublicacao = anoPublicacao;
+            if (titulo !== undefined) {
+                if (typeof titulo !== 'string' || titulo.trim() === '') {
+
+                    return res.status(400).json({ erro: 'O campo titulo deve ser um texto valido.' });
+
+                }
+
+                livro.titulo = titulo.trim();
+            }
+
+            if (autor !== undefined) {
+                if (typeof autor !== 'string' || autor.trim() === '') {
+
+                    return res.status(400).json({ erro: 'O campo autor deve ser um texto valido.' });
+
+                }
+
+                livro.autor = autor.trim();
+
+            }
+
+            if (preco !== undefined) {
+                if (typeof preco !== 'number' || preco < 0) {
+
+                    return res.status(400).json({ erro: 'O campo preço deve ser um número positivo.' });
+
+                }
+
+                livro.preco = preco;
+
+            }
+
+            if (sinopse !== undefined) {
+                if (typeof sinopse !== 'string' || sinopse.trim() === '') {
+
+                    return res.status(400).json({ erro: 'O campo sinopse deve ser um texto valido.' });
+
+                }
+
+                livro.sinopse = sinopse.trim();
+
+            }
+
+            const anoAtual = new Date().getFullYear();
+
+            if (anoPublicacao !== undefined) {
+                if (typeof anoPublicacao !== 'number' || !Number.isInteger(anoPublicacao) || anoPublicacao < 0 || anoPublicacao > anoAtual) {
+
+                    return res.status(400).json({ erro: `O campo anoPublicação deve ser um ano válido e não pode ser superior a ${anoAtual}` });
+
+                }
+
+                livro.anoPublicacao = anoPublicacao;
+
+            }
+
+            const livroExistente = await Livro.findOne({ where: { titulo: livro.titulo, autor: livro.autor } });
+
+            if (livroExistente && livroExistente.id !== id) {
+                return res.status(409).json({ erro: 'Ja existe um Livro cadastrado com este titulo e autor.' });
+            }
 
             await livro.save();
 
-            return res.status(201).json({
+            return res.status(200).json({
                 id: livro.id,
                 titulo: livro.titulo,
                 autor: livro.autor,
                 preco: livro.preco,
                 sinopse: livro.sinopse,
                 anoPublicacao: livro.anoPublicacao,
-                updatedAt: livro.updateAt
+                createdAt: livro.createdAt
             });
 
         } catch (error: any) {
@@ -113,18 +226,29 @@ export class LivroController {
     // DELETE /api/livros/:id - Remover um Livro
     public static async delete(req: Request, res: Response): Promise<Response> {
         try {
-            const { id } = req.params;
+            
+            const id = parseInt(req.params.id as string, 10);
+            if (isNaN(id) || id <= 0) {
+                return res.status(400).json({ erro: 'O ID informado deve ser um numero valido.' });
+            }
 
-            const livro = await Livro.findByPk(Number(id));
+
+            const livro = await Livro.findByPk(id);
 
             if (!livro) {
+
                 return res.status(404).json({ erro: 'Livro não encontrado para exclusão.' });
+
             }
 
             await livro.destroy();
+
             return res.status(204).send();
+
         } catch (error: any) {
+
             return res.status(500).json({ erro: 'Erro ao excluir Livro.', detalhe: error.message });
+
         }
     }
 
