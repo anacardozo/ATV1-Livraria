@@ -8,7 +8,7 @@ export class LivroController {
         try {
 
             const livros = await Livro.findAll({
-                attributes: ['id', 'titulo', 'autor', 'preco', 'sinopse', 'anoPublicacao', 'createdAt']
+                attributes: ['id', 'titulo', 'autor', 'preco', 'sinopse', 'anoPublicacao', 'updatedAt']
             });
 
             return res.status(200).json(livros);
@@ -35,7 +35,7 @@ export class LivroController {
             }
 
             const livro = await Livro.findByPk(id, {
-                attributes: ['id', 'titulo', 'autor', 'preco', 'sinopse', 'anoPublicacao', 'createdAt']
+                attributes: ['id', 'titulo', 'autor', 'preco', 'sinopse', 'anoPublicacao', 'updatedAt']
             });
 
             if (!livro) {
@@ -213,7 +213,7 @@ export class LivroController {
                 preco: livro.preco,
                 sinopse: livro.sinopse,
                 anoPublicacao: livro.anoPublicacao,
-                createdAt: livro.createdAt
+                updatedAt: livro.updatedAt
             });
 
         } catch (error: any) {

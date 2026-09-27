@@ -9,7 +9,7 @@ export class Livro extends Model {
     declare sinopse: string;
     declare anoPublicacao: number;
     declare readonly createdAt: Date;
-    declare readonly updateAt: Date;
+    declare readonly updatedAt: Date;
 }
 
 Livro.init(
