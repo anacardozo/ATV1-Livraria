@@ -20,8 +20,8 @@ Antes de começar, certifique-se de ter instalado em sua máquina:
 
 **1. Clone o repositório**
 ```bash
-git clone <url-do-seu-repositorio>
-cd <nome-da-pasta-do-repositorio>
+git clone https://github.com/anacardozo/ATV1-Livraria.git
+cd https://github.com/anacardozo/ATV1-Livraria.git
 ```
 
 **2. Instalação das Dependências**
