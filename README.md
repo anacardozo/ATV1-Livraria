@@ -1,11 +1,12 @@
 # 📚 API Livraria - Projeto LDW
 
-Este projeto foi desenvolvido para a disciplina de LDW. Trata-se de uma aplicação para o gerenciamento de uma livraria, com a API construída em Node.js, utilizando TypeScript e banco de dados PostgreSQL (configurável para rodar localmente ou na nuvem usando Supabase).
+Este projeto foi desenvolvido para a disciplina de LDW. Trata-se de uma aplicação para o gerenciamento de uma livraria, com a API construída em Node.js, utilizando TypeScript, **Sequelize como ORM** e banco de dados PostgreSQL (configurável para rodar localmente ou na nuvem usando Supabase).
 
 ## 🚀 Tecnologias Utilizadas
 
 - **Backend:** Node.js
 - **Linguagem:** TypeScript
+- **ORM:** [Sequelize](https://sequelize.org/)
 - **Banco de Dados:** PostgreSQL (Supabase / Local via Docker)
 - **Gerenciador de Pacotes:** [pnpm](https://pnpm.io/pt/)
 
@@ -16,12 +17,12 @@ Antes de começar, certifique-se de ter instalado em sua máquina:
 - [pnpm](https://pnpm.io/installation)
 - Git
 
-## 🛠️ Como instalar e rodar o projeto
+## 🛠️️ Como instalar e rodar o projeto
 
 **1. Clone o repositório**
 ```bash
 git clone https://github.com/anacardozo/ATV1-Livraria.git
-cd https://github.com/anacardozo/ATV1-Livraria.git
+cd ATV1-Livraria
 ```
 
 **2. Instalação das Dependências**
@@ -85,14 +86,19 @@ DB_SSL=false
     *   Mantenha `DB_SSL=false`.
 
 *   **Cenário B: Usando Supabase (Nuvem)**
-    *   Altere o `DB_HOST` para a URL fornecida no painel do seu Supabase (ex: `aws-0-sa-east-1.pooler.supabase.com`).
+    *   Altere o `DB_HOST` para a URL fornecida no painel do seu Supabase.
     *   Preencha a senha, usuário e nome do banco com os dados do Supabase.
     *   **Importante:** Mude a flag SSL para true: `DB_SSL=true`.
 
-**4. Iniciando a aplicação**
-Após configurar o banco de dados, você pode iniciar o servidor. (Adapte este comando caso seus scripts de inicialização sejam diferentes).
+**4. Executando as Migrations e Iniciando a aplicação**
+Com o `.env` configurado e o banco de dados acessível, execute as migrations do Sequelize para criar as tabelas e, em seguida, inicie o servidor:
 
 ```bash
 cd backend
+
+# Rodar as migrations do Sequelize para estruturar o banco de dados
+pnpm sequelize-cli db:migrate # (Adapte este comando caso o seu script no package.json tenha outro nome)
+
+# Iniciar o servidor
 pnpm run dev
 ```
