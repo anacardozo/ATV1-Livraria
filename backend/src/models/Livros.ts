@@ -8,6 +8,7 @@ export class Livro extends Model {
     declare preco: number;
     declare sinopse: string;
     declare anoPublicacao: number;
+    declare capa_url: string;
     declare readonly createdAt: Date;
     declare readonly updatedAt: Date;
 }
@@ -37,6 +38,10 @@ Livro.init(
         },
         anoPublicacao: {
             type: DataTypes.NUMBER,
+            allowNull: false
+        },
+        capa_url: {
+            type: DataTypes.STRING(400),
             allowNull: false
         }
     },
