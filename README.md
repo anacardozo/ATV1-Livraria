@@ -1,4 +1,4 @@
-# 📚 Sistema de Gerenciamento de Livraria - Projeto LDW
+# 📚 Sistema de Gerenciamento de Livraria- Velaris Library - Projeto LDW
 
 Este projeto foi desenvolvido para a disciplina de LDW. Trata-se de uma aplicação Full Stack para o gerenciamento de uma livraria, com a API construída em Node.js, utilizando TypeScript, **Sequelize como ORM** e banco de dados PostgreSQL (configurável para rodar localmente ou na nuvem usando Supabase), integrada a uma interface web desenvolvida em **React, TypeScript, Tailwind CSS e shadcn/ui**.
 
