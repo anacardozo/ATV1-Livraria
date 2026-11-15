@@ -5,6 +5,7 @@ export interface Livro {
     preco: number;
     sinopse: string;
     anoPublicacao: number;
+    capa_url: string | null;
     createdAt: string;
 }
 
@@ -14,4 +15,5 @@ export interface CreateLivroDTO {
     preco: number;
     sinopse: string;
     anoPublicacao: number;
+    capa_url: string | null;
 }

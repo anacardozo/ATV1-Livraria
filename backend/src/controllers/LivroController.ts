@@ -8,7 +8,7 @@ export class LivroController {
         try {
 
             const livros = await Livro.findAll({
-                attributes: ['id', 'titulo', 'autor', 'preco', 'sinopse', 'anoPublicacao', 'updatedAt']
+                attributes: ['id', 'titulo', 'autor', 'preco', 'sinopse', 'anoPublicacao', 'capa_url', 'updatedAt']
             });
 
             return res.status(200).json(livros);
@@ -35,7 +35,7 @@ export class LivroController {
             }
 
             const livro = await Livro.findByPk(id, {
-                attributes: ['id', 'titulo', 'autor', 'preco', 'sinopse', 'anoPublicacao', 'updatedAt']
+                attributes: ['id', 'titulo', 'autor', 'preco', 'sinopse', 'anoPublicacao', 'capa_url', 'updatedAt']
             });
 
             if (!livro) {
@@ -55,7 +55,7 @@ export class LivroController {
     public static async create(req: Request, res: Response): Promise<Response> {
         try {
 
-            const { titulo, autor, preco, sinopse, anoPublicacao } = req.body;
+            const { titulo, autor, preco, sinopse, anoPublicacao, capa_url } = req.body;
 
             if (!titulo || typeof titulo !== 'string' || titulo.trim() === '') {
 
@@ -100,7 +100,8 @@ export class LivroController {
                 autor: autor.trim(),
                 preco: preco,
                 sinopse: sinopse.trim(),
-                anoPublicacao: anoPublicacao
+                anoPublicacao: anoPublicacao,
+                capa_url: capa_url && capa_url.trim() !== '' ? capa_url.trim() : null
             });
 
             return res.status(201).json({
@@ -110,6 +111,7 @@ export class LivroController {
                 preco: novoLivro.preco,
                 sinopse: novoLivro.sinopse,
                 anoPublicacao: novoLivro.anoPublicacao,
+                capa_url: novoLivro.capa_url,
                 createdAt: novoLivro.createdAt
             });
 
@@ -134,7 +136,7 @@ export class LivroController {
 
             }
 
-            const { titulo, autor, preco, sinopse, anoPublicacao } = req.body;
+            const { titulo, autor, preco, sinopse, anoPublicacao, capa_url } = req.body;
 
             const livro = await Livro.findByPk(id);
 
@@ -198,6 +200,13 @@ export class LivroController {
 
             }
 
+            if (capa_url !== undefined) {
+                if (capa_url !== null && typeof capa_url !== 'string') {
+                    return res.status(400).json({ erro: 'O campo capa_url deve ser um texto válido.' });
+                }
+                livro.capa_url = capa_url && capa_url.trim() !== '' ? capa_url.trim() : null;
+            }
+
             const livroExistente = await Livro.findOne({ where: { titulo: livro.titulo, autor: livro.autor } });
 
             if (livroExistente && livroExistente.id !== id) {
@@ -213,6 +222,7 @@ export class LivroController {
                 preco: livro.preco,
                 sinopse: livro.sinopse,
                 anoPublicacao: livro.anoPublicacao,
+                capa_url: livro.capa_url,
                 updatedAt: livro.updatedAt
             });
 
@@ -226,7 +236,7 @@ export class LivroController {
     // DELETE /api/livros/:id - Remover um Livro
     public static async delete(req: Request, res: Response): Promise<Response> {
         try {
-            
+
             const id = parseInt(req.params.id as string, 10);
             if (isNaN(id) || id <= 0) {
                 return res.status(400).json({ erro: 'O ID informado deve ser um numero valido.' });
