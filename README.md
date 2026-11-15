@@ -22,7 +22,7 @@ Antes de começar, certifique-se de ter instalado em sua máquina:
 
 **1. Clone o repositório**
 ```bash
-git clone [https://github.com/anacardozo/ATV1-Livraria.git](https://github.com/anacardozo/ATV1-Livraria.git)
+git clone https://github.com/anacardozo/ATV1-Livraria.git
 cd ATV1-Livraria
 ```
 
